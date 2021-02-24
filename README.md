@@ -22,12 +22,12 @@ We will gather the data in text files.
 
 ## User Operations
 
-###User Diagram###
+### User Diagram ###
 <br>
 
 ![Alt text](assests/User_Diagram.png?raw=true "User Digram")
 
-###Class Diagram###
+### Class Diagram ###
 <br>
 
 ![Alt text](assests/Class_Diagram.png?raw=true "Class Digram")
