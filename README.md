@@ -22,5 +22,8 @@ We will gather the data in text files.
 
 ## User Operations
 
-![Alt text](assests/Class_Diagram.png?raw=true "Class Digram")
+###User Diagram
 ![Alt text](assests/User_Diagram.png?raw=true "User Digram")
+
+###Class Diagram
+![Alt text](assests/Class_Diagram.png?raw=true "Class Digram")
