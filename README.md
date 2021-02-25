@@ -2,20 +2,12 @@
 
 In this project we create a new Graphical User Interface for a banking system. A user is going to be able to create a user account and send and recieve money and many more abilities.
 
-IN USER CASES:
-The user can;
--- create an account,
--- log in the account (Extend:  if the typed info is not correct, van not log in.),
--- deposit an amount money,
--- view the account en the balance,
--- withdraw an amount of money,
--- edit the personel details,
--- send money, (extend: if the reciever info correct is)
--- delete the account.
+USER CASE DIAGRAM:
+The user can create an account, log in the account, deposit an amount money, view the account en the balance, withdraw an amount of money, edit the personel details, send money, delete the account.
 
-We have two classes: 
--- "User" is the parent class.
--- "Bank account is the child class."
+CLASS DIAGRAM
+We have three classes.
+"User" class is the parent class. "Bank account" class is the child class. In addition in the third class "Bank" we want to record the customers, accounts and money informations. 
 
 We will gather the data in text files.
 
