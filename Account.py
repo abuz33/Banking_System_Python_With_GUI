@@ -12,8 +12,7 @@ class Account:
         for num in Account.account_nums:
             if self.account_number == num:
                 self.account_number = randint(self.range_start, self.range_end)
-        with open("accounts", "r+") as f:
-            f.writelines(user_id+" " + balance+" "+account_number)
+
 
     def deposit_money(self, amount):
         with open("accounts", "r+") as f:
@@ -38,3 +37,7 @@ class Account:
                 [user_ID, user_balance, account] = line
                 if user_ID == self.user_id:
                     line.replace(user_balance, int(user_balance) - amount)
+
+    def create_account(self):
+        with open("accounts", "r+") as f:
+            f.writelines(self.user_id+" " + self.balance+" "+self.account_number)
