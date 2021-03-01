@@ -1,19 +1,12 @@
-from random import randint
-
 
 class Account:
-    account_num = []
+    account_num = 544450
 
     def __init__(self, user_id, balance,  account_number):
         self.user_id = user_id
         self.balance = balance
-        self.account_number = randint(self.range_start, self.range_end)
-
-        for num in Account.account_nums:
-            if self.account_number == num:
-                self.account_number = randint(self.range_start, self.range_end)
-        with open("accounts", "r+") as f:
-            f.writelines(user_id+" " + balance+" "+account_number)
+        self.account_number = self.account_num
+        Account.account_num += 1
 
     def deposit_money(self, amount):
         with open("accounts", "r+") as f:

@@ -1,14 +1,26 @@
-class User:
-    user_id = 0
+class User():
+    user_id = 10000
 
-    def __init__(self, name, birth_date, phone_number, email, password):
-        self.name = name
-        self.birth_date = birth_date
-        self.phone_number = phone_number
-        self.email = email
-        self.password = password
-        self.user_id = self.user_id
-        User.user_id += 1
+    def __init__(self):
+        self.user = {
+            'name': '',
+            'pin': '',
+            'balance': '',
+            'account_num': ''
+        }
 
-        with open("users", "r+") as f:
-            f.write(name, birth_date, phone_number, email, password)
+    def login(self, user_name, password, email):
+        self.user['user_ame'] = user_name
+        self.user['password'] = password
+        self.user['email'] = email
+
+    def create_user(self, user_name, phone, email, password):
+        self.user['user_name'] = user_name
+        self.user['phone'] = phone
+        self.user["email"]
+
+    def save_file(self):
+        pass
+
+    def gather_details(self):
+        pass
