@@ -1,46 +1,75 @@
+from time import gmtime, strftime
+import os
+
 
 class Account:
-    account_num = 544450
 
-    def __init__(self, user_id, balance,  account_number):
-        self.user_id = user_id
+    def __init__(self):
+        self.name = ''
+        self.balance = ''
+        self.account_number = ''
+
+    def init_account(self, name, balance, acc_num):
+        self.name = name
         self.balance = balance
-<<<<<<< HEAD
-        self.account_number = self.account_num
-        Account.account_num += 1
-=======
-        self.account_number = randint(self.range_start, self.range_end)
-
-        for num in Account.account_nums:
-            if self.account_number == num:
-                self.account_number = randint(self.range_start, self.range_end)
-
->>>>>>> 43b53da0065f34ca635319f9956862177950b849
+        self.account_number = acc_num
+        with open(str(acc_num)+'-rec.txt', "w") as frec:
+            frec.write(
+                "Date               \t\t\t\t\tDeposit         withdraw                Balance\n")
+            frec.write(str(strftime("[%Y-%m-%d] [%H-%M-%S]", gmtime())
+                           )+"\t\t\t\t"+balance+'\t\t\t\t\t\t\t\t\t\t'+balance)
 
     def deposit_money(self, amount):
-        with open("accounts", "r+") as f:
-            all_lines = f.readlines()
-            for line in all_lines:
-                [user_ID, user_balance, account] = line
-                if user_ID == self.user_id:
-                    line.replace(user_balance, int(user_balance) + amount)
+        self.balance = int(self.balance) + amount
+        self.add_line_to_file(amount, 'deposit', self.account_number)
+        return True
 
     def withdraw_money(self, amount):
-        with open("accounts", "r+") as f:
-            all_lines = f.readlines()
-            for line in all_lines:
-                [user_ID, user_balance, account] = line
-                if user_ID == self.user_id:
-                    line.replace(user_balance, int(user_balance) - amount)
+        pass
 
     def account_overview(self, amount):
-        with open("accounts", "r+") as f:
-            all_lines = f.readlines()
-            for line in all_lines:
-                [user_ID, user_balance, account] = line
-                if user_ID == self.user_id:
-                    line.replace(user_balance, int(user_balance) - amount)
 
-    def create_account(self):
-        with open("accounts", "r+") as f:
-            f.writelines(self.user_id+" " + self.balance+" "+self.account_number)
+        # with open("accounts", "r+") as f:
+        #     all_lines = f.readlines()
+        #     for line in all_lines:
+        #         [user_ID, user_balance, account] = line
+        #         if user_ID == self.user_id:
+        #             line.replace(user_balance, int(user_balance) - amount)
+        pass
+
+    def send_money(self, acc_num, amount):
+        all_accounts = os.listdir()
+        filename = acc_num + '-rec'
+        for file in all_accounts:
+            if filename in file:
+                with open(file, 'r+') as f:
+                    lines = f.readlines()
+                    lines[2] = str(int(f.readlines[2]) + int(amount))
+                    f.writelines(lines)
+
+    # def save_transcations(self, acc_num, type, amount):
+    #     all_accounts = os.listdir()
+    #     filename = acc_num + '-rec'
+    #     for file in all_accounts:
+    #         if filename in file:
+    #             with open(file, 'r+') as f:
+    #                 lines = f.readlines()
+    #                 lines[2] = str(int(f.readlines[2]) + int(amount))
+
+    def add_line_to_file(self, amount, operation_type, acc_num):
+        if operation_type == ' deposit':
+            line = '\n'+str(strftime("[%Y-%m-%d] [%H-%M-%S]", gmtime())
+                            )+"\t\t\t\t"+amount+'\t\t\t\t\t\t\t\t\t\t'+self.balance
+        elif operation_type == 'withdraw':
+            line = '\n'+str(strftime("[%Y-%m-%d] [%H-%M-%S]", gmtime())
+                            )+"\t\t\t\t\t\t\t\t"+amount + "\t\t\t\t\t\t" + str(self.balance)
+
+        all_accounts = os.listdir()
+        filename = acc_num + '-rec'
+        for file in all_accounts:
+            if filename in file:
+                with open(file, 'r+') as f:
+                    f.write(line)
+
+    def save_file(self):
+        pass

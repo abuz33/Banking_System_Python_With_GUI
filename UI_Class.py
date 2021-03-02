@@ -4,61 +4,8 @@ from random import randint
 import os
 import glob
 
-import Account
-
-
-class User():
-
-    def __init__(self):
-        self.name = ''
-        self.pin = ''
-        self.balance = ''
-        self.account_num = ''
-
-    def login(self, user_name, acc_num, pin):
-        if user_name == '' or acc_num == '' or pin == '':
-            messagebox.showwarning(
-                'Invalid way of Entering', 'You need to enter all of the information')
-            return
-
-        all_accounnts = glob.glob('./*.txt')
-
-        for file in all_accounnts:
-            if acc_num in file:
-                with open(file, 'r') as f:
-                    lines = f.readlines()
-
-                    if lines[0][:-1] == user_name and lines[1][:-1] == pin and lines[3] == acc_num:
-                        return True
-                    else:
-                        return "Informations entered doesn't match"
-
-        return False
-
-    def create_user(self, name, balance, pin):
-        self.name = name
-        self.balance = balance
-        self.pin = pin
-
-        self.save_file()
-
-    def save_file(self):
-        with open('Account_rec.txt', 'r+') as f:
-            accnt_n = int(f.readlines()[-1])
-            new_accnt_n = accnt_n + 1
-            print(accnt_n)
-            print(new_accnt_n)
-            self.account_num = new_accnt_n
-            f.write('\n'+str(new_accnt_n))
-
-        with open(str(self.account_num)+'.txt', 'w') as f:
-            f.write(self.name + '\n')
-            f.write(self.pin+'\n')
-            f.write(self.balance+'\n')
-            f.write(str(self.account_num))
-
-    def gather_details(self):
-        pass
+from Account import Account
+from User import User
 
 
 class UI_Class(Frame):
@@ -67,6 +14,7 @@ class UI_Class(Frame):
         self.master = master
 
         self.user = User()
+        self.account = Account()
 
         self.master.geometry("500x500")
         self.master.title("Most Secure banking")
@@ -77,20 +25,83 @@ class UI_Class(Frame):
         self.user_logged_page = Frame(self.master)
         self.user_login_page = Frame(self.master)
 
+        self.user_deposit_page = Frame(self.master)
+        self.user_withdraw_page = Frame(self.master)
+        self.user_edit_page = Frame(self.master)
+        self.user_delete_page = Frame(self.master)
+        self.user_send_page = Frame(self.master)
+
         self.UI_elements()
         self.create_entry_page()
+        self.open_windows = []
+    # Pages
+
+    def login_page(self):
+        self.entry_page.grid_remove()
+        self.user_login_page.grid(row=0)
+
+        self.login_label_1.grid(row=0, column=0)
+        self.login_entry_1.grid(row=0, column=1)
+
+        self.login_label_2.grid(row=1, column=0)
+        self.login_entry_2.grid(row=1, column=1)
+
+        self.login_label_3.grid(row=2, column=0)
+        self.login_entry_3.grid(row=2, column=1)
+
+        self.login_submit_button.grid(row=3)
+        self.login_home_button.grid(row=4)
 
     def withdraw_page(self):
-        pass
+        self.user_logged_page.grid_remove()
+        self.user_withdraw_page.grid(row=0)
+        self.withdraw_label_1.grid(row=0, column=0)
+        self.withdraw_entry_1.grid(row=0, column=1)
+
+        self.withdraw_submit_button.grid(row=1)
+        self.withdraw_home_button.grid(row=2)
 
     def deposit_page(self):
-        pass
+        self.user_logged_page.grid_remove()
+        self.user_deposit_page.grid(row=0)
+        self.deposit_label_1.grid(row=0, column=0)
+        self.deposit_entry_1.grid(row=0, column=1)
+
+        self.deposit_submit_button.grid(row=1)
+        self.deposit_home_button.grid(row=2)
 
     def edit_personal_page(self):
-        pass
+        self.user_logged_page.grid_forget()
+        self.user_edit_page.grid(row=0)
+        self.edit_label_1.grid(row=0, column=0)
+        self.edit_entry_1.grid(row=0, column=1)
 
-    def user_delete_page(self):
-        pass
+        self.edit_label_2.grid(row=1, column=0)
+        self.edit_entry_2.grid(row=1, column=1)
+
+        self.edit_submit_button.grid(row=2)
+        self.edit_home_button.grid(row=3)
+
+    def delete_page(self):
+        self.user_logged_page.grid_remove()
+        self.user_delete_page.grid(row=0)
+
+        self.delete_entry_1.grid(row=0)
+        self.delete_yes_button.grid(row=1, column=0)
+        self.delete_no_button.grid(row=1, column=1)
+
+    def send_page(self):
+        self.user_logged_page.grid_remove()
+        self.user_send_page.grid(row=0)
+
+        self.send_label_1.grid(row=0, column=0)
+        self.send_entry_1.grid(row=0, column=1)
+
+        self.send_label_2.grid(row=1, column=0)
+        self.send_entry_2.grid(row=1, column=1)
+
+        self.send_submit_button.grid(row=2)
+        self.send_home_button.grid(row=3)
 
     def login(self):
         user_name = self.login_entry_1.get()
@@ -104,16 +115,19 @@ class UI_Class(Frame):
                 "Operation is not successful", 'Cannot find user')
         elif type(return_result) == str:
             messagebox.showwarning(
-                'Not valid data', 'You informations is not correct')
+                'Not valid data', 'Your informations are not correct')
 
     def check_create_user(self):
         user_name = self.create_entry_1.get()
         user_balance = self.create_entry_2.get()
         user_pin = self.create_entry_3.get()
         if user_pin == '' or user_name == '' or user_balance == '':
-            messagebox.showwarning("Try Again", "You have to enter all of the information!!!")
+            messagebox.showwarning(
+                "Try Again", "You have to enter all of the information!!!")
         else:
             self.user.create_user(user_name, user_balance, user_pin)
+            self.account.init_account(
+                user_name, user_balance, self.user.account_num)
             messagebox.showinfo('Operation is successful!',
                                 'Successfully created an account, \n Your account number is ' + str(self.user.account_num)+' please login to the system')
             self.login_page()
@@ -121,13 +135,15 @@ class UI_Class(Frame):
     def logged_page(self):
         self.user_login_page.grid_remove()
         self.user_create_page.grid_remove()
+
         self.user_logged_page.grid(row=0)
+
         self.logged_deposit_button.grid(row=0)
         self.logged_withdraw_button.grid(row=1)
         self.logged_send_money_button.grid(row=2)
         self.logged_edit_personal_detail.grid(row=3)
         self.logged_delete_button.grid(row=4)
-        self.logged_logout_button.grid(5)
+        self.logged_logout_button.grid(row=5)
 
     def return_home(self):
         self.user_logged_page.grid_remove()
@@ -156,8 +172,60 @@ class UI_Class(Frame):
         self.create_submit_button.grid(row=3, sticky=W)
         self.create_home_button.grid(row=4, sticky=W)
 
+    def edit_info(self):
+        self.open_windows.append(self.user_edit_page)
+        name = self.edit_entry_1.get()
+        pin = self.edit_entry_2.get()
+        self.user.update_info(name, pin)
+    ###Submit buttons ####
+
+    def deposit(self):
+        amount = self.deposit_entry_1.get()
+        result_user = self.user.update_balance('deposit', amount)
+        if result_user:
+            result_account = self.account.deposit_money(amount)
+
+        if result_account:
+            messagebox.showinfo("Success", 'Operation is succesfully done.')
+
+    def widthdraw(self):
+        self.open_windows.append(self.user_withdraw_page)
+        self.withdraw_label_1.grid(row=0, column=0)
+        self.withdraw_entry_1.grid(row=0, column=1)
+        self.withdraw_submit_button.grid(row=1)
+        self.withdraw_home_button.grid(row=2)
+
+    def send_money(self):
+        self.open_windows.append(self.user_send_page)
+
+        self.send_entry_1.grid(row=0, column=0)
+        self.send_label_1.grid(row=0, column=1)
+
+        self.send_entry_2.grid(row=1, column=0)
+        self.send_label_2.grid(row=1, column=1)
+
+        self.send_submit_button.grid(row=2, column=0)
+        self.send_home_button.grid(row=3, column=0)
+
+    def delete(self):
+        self.open_windows.append(self.user_delete_page)
+
+    def send_submit(self):
+        acc_num = self.send_entry_1.get()
+        amount = self.send_entry_2.get()
+        self.account.send_money(acc_num, amount)
+
+    def delete_account(self):
+        pass
+    #### Cancel Buttons #####
+
+    def return_logged_menu(self, page):
+        page.grid_remove()
+        self.logged_page()
+
     def exit_pages(self):
         self.master.destroy()
+    #### UI ELEMENTS #####
 
     def UI_elements(self):
         # Entry Pages
@@ -201,7 +269,7 @@ class UI_Class(Frame):
         # Entry
         self.login_entry_1 = Entry(self.user_login_page)
         self.login_entry_2 = Entry(self.user_login_page)
-        self.login_entry_3 = Entry(self.user_login_page)
+        self.login_entry_3 = Entry(self.user_login_page, show='*')
 
         # Buttons
         self.login_submit_button = Button(
@@ -218,30 +286,93 @@ class UI_Class(Frame):
                                             text="Deposit Money", command=self.deposit_page)
         self.logged_edit_personal_detail = Button(self.user_logged_page,
                                                   text="Edit Personal Detail", command=self.edit_personal_page)
-        self.logged_delete_button = Button(self.user_login_page,
-                                           text="Delete account", command=self.user_delete_page)
+        self.logged_delete_button = Button(self.user_logged_page,
+                                           text="Delete account", command=self.delete_page)
 
-        self.logged_send_money_button = Button(self.user_login_page,
-                                               text="Send money", command=self.user_delete_page)
+        self.logged_send_money_button = Button(self.user_logged_page,
+                                               text="Send money", command=self.send_page)
 
         self.logged_logout_button = Button(self.user_logged_page,
                                            text="Logout", command=self.return_home)
 
-    def login_page(self):
-        self.entry_page.grid_remove()
-        self.user_login_page.grid(row=0)
+        ###### DEPOSIT  PAGE ######
+        # Lables
+        self.deposit_label_1 = Label(self.user_deposit_page,
+                                     text='Enter your name: ')
 
-        self.login_label_1.grid(row=0, column=0)
-        self.login_entry_1.grid(row=0, column=1)
+        # Entry
+        self.deposit_entry_1 = Entry(
+            self.user_deposit_page, text=self.user.name)
 
-        self.login_label_2.grid(row=1, column=0)
-        self.login_entry_2.grid(row=1, column=1)
+        # Buttons
+        self.deposit_submit_button = Button(
+            self.user_deposit_page, text="Submit", command=self.deposit)
 
-        self.login_label_3.grid(row=2, column=0)
-        self.login_entry_3.grid(row=2, column=1)
+        self.deposit_home_button = Button(self.user_deposit_page,
+                                          text="Cancel", command=lambda: self.return_logged_menu(self.user_deposit_page))
 
-        self.login_submit_button.grid(row=3)
-        self.login_home_button.grid(row=4)
+        ###### Withdraw  PAGE ######
+        # Lables
+        self.withdraw_label_1 = Label(self.user_withdraw_page,
+                                      text='Enter your name: ')
+
+        # Entry
+        self.withdraw_entry_1 = Entry(
+            self.user_withdraw_page, text=self.user.name)
+
+        # Buttons
+        self.withdraw_submit_button = Button(
+            self.user_withdraw_page, text="Submit", command=self.deposit)
+
+        self.withdraw_home_button = Button(self.user_withdraw_page,
+                                           text="Cancel", command=lambda: self.return_logged_menu(self.user_withdraw_page))
+
+        ###### SEND MONEY PAGE ######
+        # Lables
+        self.send_label_1 = Label(self.user_send_page,
+                                  text='Enter your name: ')
+        self.send_label_2 = Label(self.user_send_page,
+                                  text='Enter your PIN: ')
+
+        # Entry
+        self.send_entry_1 = Entry(self.user_send_page)
+        self.send_entry_2 = Entry(self.user_send_page, show='*')
+
+        # Buttons
+        self.send_submit_button = Button(
+            self.user_send_page, text="Submit", command=self.send_submit)
+
+        self.send_home_button = Button(self.user_send_page,
+                                       text="Cancel", command=lambda: self.return_logged_menu(self.user_send_page))
+
+        ###### EDIT PERSONAL DETAIL PAGE ######
+        # Lables
+        self.edit_label_1 = Label(self.user_edit_page,
+                                  text='Enter your name: ')
+        self.edit_label_2 = Label(self.user_edit_page,
+                                  text='Enter your PIN: ')
+
+        # Entry
+        self.edit_entry_1 = Entry(self.user_edit_page, text=self.user.name)
+        self.edit_entry_2 = Entry(self.user_edit_page, show='*')
+
+        # Buttons
+        self.edit_submit_button = Button(
+            self.user_edit_page, text="Submit", command=self.edit_info)
+
+        self.edit_home_button = Button(self.user_edit_page,
+                                       text="Cancel", command=lambda: self.return_logged_menu(self.user_edit_page))
+
+        ###### DELETE PAGE ######
+        # Labels
+        self.delete_entry_1 = Label(
+            self.user_delete_page, text='Woudl you like to delete your account? \nThink about it again!!!!')
+
+        # Buttons
+        self.delete_yes_button = Button(
+            self.user_delete_page, text='YES', command=self.delete_account)
+        self.delete_no_button = Button(
+            self.user_delete_page, text="No", command=lambda: self.return_logged_menu(self.user_delete_page))
 
 
 root = Tk()
