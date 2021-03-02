@@ -109,6 +109,12 @@ class UI_Class(Frame):
         user_pin = self.login_entry_3.get()
         return_result = self.user.login(user_name, user_account, user_pin)
         if return_result:
+            self.user.account_num = user_account
+            self.user.pin = user_pin
+            self.user.name = user_name
+            print(str(self.user.balance) + "UI")
+            self.account.login(
+                self.user.name, self.user.balance, self.user.account_num)
             self.logged_page()
         elif return_result == False:
             messagebox.showwarning(
@@ -119,7 +125,7 @@ class UI_Class(Frame):
 
     def check_create_user(self):
         user_name = self.create_entry_1.get()
-        user_balance = self.create_entry_2.get()
+        user_balance = int(self.create_entry_2.get())
         user_pin = self.create_entry_3.get()
         if user_pin == '' or user_name == '' or user_balance == '':
             messagebox.showwarning(
@@ -173,14 +179,13 @@ class UI_Class(Frame):
         self.create_home_button.grid(row=4, sticky=W)
 
     def edit_info(self):
-        self.open_windows.append(self.user_edit_page)
         name = self.edit_entry_1.get()
         pin = self.edit_entry_2.get()
         self.user.update_info(name, pin)
     ###Submit buttons ####
 
     def deposit(self):
-        amount = self.deposit_entry_1.get()
+        amount = int(self.deposit_entry_1.get())
         result_user = self.user.update_balance('deposit', amount)
         if result_user:
             result_account = self.account.deposit_money(amount)
@@ -189,23 +194,13 @@ class UI_Class(Frame):
             messagebox.showinfo("Success", 'Operation is succesfully done.')
 
     def widthdraw(self):
-        self.open_windows.append(self.user_withdraw_page)
-        self.withdraw_label_1.grid(row=0, column=0)
-        self.withdraw_entry_1.grid(row=0, column=1)
-        self.withdraw_submit_button.grid(row=1)
-        self.withdraw_home_button.grid(row=2)
+        amount = int(self.withdraw_entry_1.get())
+        self.user.update_balance('withdraw', amount)
+        self.account.withdraw_money(amount)
 
     def send_money(self):
-        self.open_windows.append(self.user_send_page)
-
-        self.send_entry_1.grid(row=0, column=0)
-        self.send_label_1.grid(row=0, column=1)
-
-        self.send_entry_2.grid(row=1, column=0)
-        self.send_label_2.grid(row=1, column=1)
-
-        self.send_submit_button.grid(row=2, column=0)
-        self.send_home_button.grid(row=3, column=0)
+        self.send_entry_1.get()
+        self.send_entry_2.get()
 
     def delete(self):
         self.open_windows.append(self.user_delete_page)
@@ -322,7 +317,7 @@ class UI_Class(Frame):
 
         # Buttons
         self.withdraw_submit_button = Button(
-            self.user_withdraw_page, text="Submit", command=self.deposit)
+            self.user_withdraw_page, text="Submit", command=self.widthdraw)
 
         self.withdraw_home_button = Button(self.user_withdraw_page,
                                            text="Cancel", command=lambda: self.return_logged_menu(self.user_withdraw_page))
