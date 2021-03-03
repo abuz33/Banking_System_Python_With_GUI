@@ -108,18 +108,20 @@ class UI_Class(Frame):
         user_account = self.login_entry_2.get()
         user_pin = self.login_entry_3.get()
         return_result = self.user.login(user_name, user_account, user_pin)
-        if return_result:
+
+        if return_result == True:
             self.user.account_num = user_account
             self.user.pin = user_pin
             self.user.name = user_name
-            print(str(self.user.balance) + "UI")
+
             self.account.login(
                 self.user.name, self.user.balance, self.user.account_num)
+
             self.logged_page()
         elif return_result == False:
             messagebox.showwarning(
                 "Operation is not successful", 'Cannot find user')
-        elif type(return_result) == str:
+        elif return_result == "Informations entered doesn't match":
             messagebox.showwarning(
                 'Not valid data', 'Your informations are not correct')
 
@@ -156,6 +158,9 @@ class UI_Class(Frame):
         self.user_login_page.grid_remove()
         self.user_create_page.grid_remove()
         self.create_entry_page()
+        self.user.name = ''
+        self.user.pin = ''
+        self.user.account_num = ''
 
     def create_entry_page(self):
         self.entry_page.grid(row=0)
@@ -185,8 +190,9 @@ class UI_Class(Frame):
     ###Submit buttons ####
 
     def deposit(self):
-        amount = int(self.deposit_entry_1.get())
-        result_user = self.user.update_balance('deposit', amount)
+        amount = self.deposit_entry_1.get()
+        result_user = self.user.update_balance(
+            'deposit', self.user.account_num, int(amount))
         if result_user:
             result_account = self.account.deposit_money(amount)
 
@@ -195,23 +201,25 @@ class UI_Class(Frame):
 
     def widthdraw(self):
         amount = int(self.withdraw_entry_1.get())
-        self.user.update_balance('withdraw', amount)
+        self.user.update_balance('withdraw', self.user.account_num, amount)
         self.account.withdraw_money(amount)
 
     def send_money(self):
-        self.send_entry_1.get()
-        self.send_entry_2.get()
+        pass
 
     def delete(self):
         self.open_windows.append(self.user_delete_page)
 
     def send_submit(self):
-        acc_num = self.send_entry_1.get()
+        to_acc_num = self.send_entry_1.get()
         amount = self.send_entry_2.get()
-        self.account.send_money(acc_num, amount)
+        return_result = self.user.send_money(to_acc_num, amount)
+        if return_result:
+            self.account.send_money(to_acc_num, amount, return_result)
 
     def delete_account(self):
-        pass
+        self.user.remove_account()
+        self.account.remove_account()
     #### Cancel Buttons #####
 
     def return_logged_menu(self, page):
@@ -309,7 +317,7 @@ class UI_Class(Frame):
         ###### Withdraw  PAGE ######
         # Lables
         self.withdraw_label_1 = Label(self.user_withdraw_page,
-                                      text='Enter your name: ')
+                                      text='Enter the amount: ')
 
         # Entry
         self.withdraw_entry_1 = Entry(
@@ -325,9 +333,9 @@ class UI_Class(Frame):
         ###### SEND MONEY PAGE ######
         # Lables
         self.send_label_1 = Label(self.user_send_page,
-                                  text='Enter your name: ')
+                                  text='Enter the reciever account number: ')
         self.send_label_2 = Label(self.user_send_page,
-                                  text='Enter your PIN: ')
+                                  text='Enter the amount: ')
 
         # Entry
         self.send_entry_1 = Entry(self.user_send_page)

@@ -25,15 +25,35 @@ class User():
                 with open(file, 'r') as f:
                     lines = f.readlines()
 
-                    # print(lines)
-                    if lines[0][:-1] == user_name and lines[1][:-1] == pin and lines[3] == acc_num:
-                        self.balance = int(lines[2][:-1])
-
-                        return True
+                    if user_name == lines[0][:-1]:
+                        if lines[1][:-1] == pin:
+                            if lines[3] == acc_num:
+                                self.balance = int(lines[2][:-1])
+                                return True
                     else:
                         return "Informations entered doesn't match"
 
         return False
+
+    def check_user(self, acc_num):
+        file_name = acc_num+'.txt'
+
+        all_accounnts = os.listdir()
+        for file in all_accounnts:
+            if file_name == file:
+                return True
+        else:
+            return False
+
+    def send_money(self, to_acc_num, amount):
+        if self.check_user(to_acc_num):
+            balance = self.update_balance('deposit', to_acc_num, amount)
+            self.update_balance('withdraw', self.account_num, amount)
+            return balance
+        else:
+            messagebox.showinfo("Operation is not Successfully done",
+                                'User you tried to send is not in our system')
+            return False
 
     def create_user(self, name, balance, pin):
         self.name = name
@@ -42,24 +62,22 @@ class User():
 
         self.save_file()
 
-    def update_balance(self, operation_type, amount):
-        print(str(self.balance) + 'User')
+    def update_balance(self, operation_type, acc_num, amount):
 
-        if operation_type == 'deposit':
-            self.balance += int(amount)
-        elif operation_type == 'withdraw':
-            self.balance -= int(amount)
-
-        print('after ' + str(self.balance))
-
-        with open(str(self.account_num)+'.txt', 'r+') as f:
+        with open(str(acc_num)+'.txt', 'r+') as f:
             lines = f.readlines()
-            lines[2] = str(self.balance) + '\n'
 
-        with open(str(self.account_num) + '.txt', 'w') as f:
+            if operation_type == 'deposit':
+                balance = int(lines[2][:-1]) + int(amount)
+            elif operation_type == 'withdraw':
+                balance = int(lines[2][:-1]) - int(amount)
+
+            lines[2] = str(balance) + '\n'
+
+        with open(str(acc_num) + '.txt', 'w') as f:
             f.writelines(lines)
 
-        return True
+        return balance
 
     def update_info(self, name, pin):
         with open(str(self.account_num)+'.txt', 'w') as f:
@@ -81,5 +99,5 @@ class User():
             f.write(self.balance+'\n')
             f.write(str(self.account_num))
 
-    def gather_details(self):
-        pass
+    def remove_account(self):
+        os.remove(self.account_num+'.txt')

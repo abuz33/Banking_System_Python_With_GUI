@@ -25,9 +25,9 @@ class Account:
                            )+"\t\t\t\t"+str(balance)+'\t\t\t\t\t\t\t\t\t\t'+str(balance))
 
     def deposit_money(self, amount):
-        print(self.balance)
         self.balance = int(self.balance) + amount
-        self.add_line_to_file(amount, 'deposit', self.account_number)
+        self.add_line_to_file(
+            amount, 'deposit', self.account_number, self.balance)
         return True
 
     def withdraw_money(self, amount):
@@ -35,44 +35,34 @@ class Account:
             return False
         self.balance = int(self.balance) - amount
         self.add_line_to_file(str(amount), 'withdraw',
-                              str(self.account_number))
+                              str(self.account_number), self.balance)
 
     def account_overview(self, amount):
         pass
 
-    def send_money(self, acc_num, amount):
-        all_accounts = os.listdir()
-        filename = acc_num + '-rec'
-        for file in all_accounts:
-            if filename in file:
-                with open(file, 'r+') as f:
-                    lines = f.readlines()
-                    lines[2] = str(int(f.readlines[2]) + int(amount))
-                    f.writelines(lines)
+    def send_money(self, to_acc_num, amount, balance):
+        self.add_line_to_file(amount, 'deposit', to_acc_num, balance)
+        self.add_line_to_file(amount, 'withdraw',
+                              self.account_number, self.balance)
 
-    # def save_transcations(self, acc_num, type, amount):
-    #     all_accounts = os.listdir()
-    #     filename = acc_num + '-rec'
-    #     for file in all_accounts:
-    #         if filename in file:
-    #             with open(file, 'r+') as f:
-    #                 lines = f.readlines()
-    #                 lines[2] = str(int(f.readlines[2]) + int(amount))
+    def remove_account(self):
+        os.remove(self.account_number+'-rec.txt')
 
-    def add_line_to_file(self, amount, operation_type, acc_num):
+    def add_line_to_file(self, amount, operation_type, acc_num, balance):
 
         if operation_type == 'deposit':
             line = '\n'+str(strftime("[%Y-%m-%d] [%H-%M-%S]", gmtime())
-                            )+"\t\t\t\t"+str(amount)+'\t\t\t\t\t\t\t\t\t\t'+str(self.balance)
+                            )+"\t\t\t\t"+str(amount)+'\t\t\t\t\t\t\t\t\t\t'+str(balance)
         elif operation_type == 'withdraw':
             line = '\n'+str(strftime("[%Y-%m-%d] [%H-%M-%S]", gmtime())
-                            )+"\t\t\t\t\t\t\t\t"+str(amount) + "\t\t\t\t\t\t" + str(self.balance)
+                            )+"\t\t\t\t\t\t\t\t"+str(amount) + "\t\t\t\t\t\t" + str(balance)
 
         all_accounts = os.listdir()
         filename = acc_num + '-rec'
         for file in all_accounts:
             if filename in file:
                 with open(file, 'a') as f:
+
                     f.write(line)
 
     def save_file(self):
