@@ -45,7 +45,6 @@ class UI_Class(Frame):
         self.entry_page.grid(row=0)
         self.entry_logo_label.grid(row=0, sticky=N, pady=10)
         self.entry_logo_label_2.grid(row=1, sticky=N)
-        
 
         self.entry_logo_img.grid(row=2, sticky=N, pady=15)
 
@@ -262,7 +261,7 @@ class UI_Class(Frame):
             to_acc_num = self.send_entry_1.get()
             amount = self.send_entry_2.get()
             return_result = self.user.send_money(to_acc_num, amount)
-            if return_result:
+            if return_result > 0:
                 result_account = self.account.send_money(
                     to_acc_num, amount, return_result)
             if result_account:
@@ -321,9 +320,10 @@ class UI_Class(Frame):
         image1 = Image.open('image11.png')
         image1.resize((400, 400))
         test = ImageTk.PhotoImage(image1)
-        
-        self.entry_logo_img = Label(self.entry_page, image=test, width=200, height=200)
-        self.entry_logo_img.image=test
+
+        self.entry_logo_img = Label(
+            self.entry_page, image=test, width=200, height=200)
+        self.entry_logo_img.image = test
 
         self.entry_logo_label = Label(self.entry_page, text="Refugee Bank", font=(
             'Calibri', 14, 'bold'), bg='orange', fg='white')
