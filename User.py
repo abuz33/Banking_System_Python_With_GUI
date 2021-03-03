@@ -46,13 +46,16 @@ class User():
             return False
 
     def send_money(self, to_acc_num, amount):
-        if self.check_user(to_acc_num):
-            balance = self.update_balance('deposit', to_acc_num, amount)
-            self.update_balance('withdraw', self.account_num, amount)
-            return balance
+        if self.balance - amount > 0:
+            if self.check_user(to_acc_num):
+                balance = self.update_balance('deposit', to_acc_num, amount)
+                self.update_balance('withdraw', self.account_num, amount)
+                return balance
+            else:
+                messagebox.showinfo("Operation is not Successfully done",
+                                    'User you tried to send is not in our system')
+                return False
         else:
-            messagebox.showinfo("Operation is not Successfully done",
-                                'User you tried to send is not in our system')
             return False
 
     def create_user(self, name, balance, pin):
@@ -96,7 +99,7 @@ class User():
         with open(str(self.account_num)+'.txt', 'w') as f:
             f.write(self.name + '\n')
             f.write(self.pin+'\n')
-            f.write(self.balance+'\n')
+            f.write(str(self.balance)+'\n')
             f.write(str(self.account_num))
 
     def remove_account(self):

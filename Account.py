@@ -41,9 +41,13 @@ class Account:
         pass
 
     def send_money(self, to_acc_num, amount, balance):
-        self.add_line_to_file(amount, 'deposit', to_acc_num, balance)
-        self.add_line_to_file(amount, 'withdraw',
-                              self.account_number, self.balance)
+        if self.balance - amount > 0:
+            self.add_line_to_file(amount, 'deposit', to_acc_num, balance)
+            self.add_line_to_file(amount, 'withdraw',
+                                  self.account_number, self.balance)
+            return True
+        else:
+            return False
 
     def remove_account(self):
         os.remove(self.account_number+'-rec.txt')

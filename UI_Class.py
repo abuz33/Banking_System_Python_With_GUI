@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 from random import randint
 import os
-import glob
+from PIL import Image, ImageTk
 
 from Account import Account
 from User import User
@@ -19,6 +19,7 @@ class UI_Class(Frame):
         self.master.geometry("500x500")
         self.master.title("Most Secure banking")
         self.master.geometry("500x500")
+        self.master.config(bg='orange')
         # pages
         self.entry_page = Frame(self.master)
         self.user_create_page = Frame(self.master)
@@ -34,7 +35,35 @@ class UI_Class(Frame):
         self.UI_elements()
         self.create_entry_page()
         self.open_windows = []
+
     # Pages
+    def create_entry_page(self):
+        self.entry_page.config(bg='orange')
+        self.entry_page.grid(row=0)
+        self.entry_logo_label.grid(row=0, sticky=N, pady=10)
+        self.entry_logo_label_2.grid(row=1, sticky=N)
+
+        self.entry_logo_img.grid(row=2, sticky=N, pady=15)
+
+        self.entry_create_button.grid(row=3, pady=10)
+        self.entry_create_button.config(bg='red')
+        self.entry_login_button.grid(row=4,  pady=10)
+        self.entry_exit_button.grid(row=5,  pady=10)
+
+    def create_page(self):
+        self.entry_page.grid_remove()
+        self.user_create_page.grid(row=0)
+        self.create_label_1.grid(row=0, column=0)
+        self.create_entry_1.grid(row=0, column=1)
+
+        self.create_label_2.grid(row=1, column=0)
+        self.create_entry_2.grid(row=1, column=1)
+
+        self.create_label_3.grid(row=2, column=0)
+        self.create_entry_3.grid(row=2, column=1)
+
+        self.create_submit_button.grid(row=3, sticky=W)
+        self.create_home_button.grid(row=4, sticky=W)
 
     def login_page(self):
         self.entry_page.grid_remove()
@@ -51,6 +80,19 @@ class UI_Class(Frame):
 
         self.login_submit_button.grid(row=3)
         self.login_home_button.grid(row=4)
+
+    def logged_page(self):
+        self.user_login_page.grid_remove()
+        self.user_create_page.grid_remove()
+
+        self.user_logged_page.grid(row=0)
+
+        self.logged_deposit_button.grid(row=0)
+        self.logged_withdraw_button.grid(row=1)
+        self.logged_send_money_button.grid(row=2)
+        self.logged_edit_personal_detail.grid(row=3)
+        self.logged_delete_button.grid(row=4)
+        self.logged_logout_button.grid(row=5)
 
     def withdraw_page(self):
         self.user_logged_page.grid_remove()
@@ -103,6 +145,27 @@ class UI_Class(Frame):
         self.send_submit_button.grid(row=2)
         self.send_home_button.grid(row=3)
 
+    ###Submit buttons ####
+
+    def check_create_user(self):
+        if self.check__number(self.create_entry_2.get()):
+            user_name = self.create_entry_1.get()
+            user_balance = int(self.create_entry_2.get())
+            user_pin = self.create_entry_3.get()
+
+            if user_pin == '' or user_name == '' or user_balance == '':
+                messagebox.showwarning(
+                    "Try Again", "You have to enter all of the information!!!")
+            else:
+                self.user.create_user(user_name, user_balance, user_pin)
+                self.account.init_account(
+                    user_name, user_balance, self.user.account_num)
+                messagebox.showinfo('Operation is successful!',
+                                    'Successfully created an account, \n Your account number is ' + str(self.user.account_num)+' please login to the system')
+                self.login_page()
+        else:
+            messagebox.showinfo("", 'Balance must be a number')
+
     def login(self):
         user_name = self.login_entry_1.get()
         user_account = self.login_entry_2.get()
@@ -125,101 +188,78 @@ class UI_Class(Frame):
             messagebox.showwarning(
                 'Not valid data', 'Your informations are not correct')
 
-    def check_create_user(self):
-        user_name = self.create_entry_1.get()
-        user_balance = int(self.create_entry_2.get())
-        user_pin = self.create_entry_3.get()
-        if user_pin == '' or user_name == '' or user_balance == '':
-            messagebox.showwarning(
-                "Try Again", "You have to enter all of the information!!!")
+    def deposit(self):
+        if self.check__number(self.deposit_entry_1.get()):
+            amount = int(self.deposit_entry_1.get())
+            result_user = self.user.update_balance(
+                'deposit', self.user.account_num, amount)
+            if result_user:
+                result_account = self.account.deposit_money(amount)
+
+            if result_account:
+                messagebox.showinfo(
+                    "Success", 'Operation is succesfully done.')
+            self.logged_page()
         else:
-            self.user.create_user(user_name, user_balance, user_pin)
-            self.account.init_account(
-                user_name, user_balance, self.user.account_num)
-            messagebox.showinfo('Operation is successful!',
-                                'Successfully created an account, \n Your account number is ' + str(self.user.account_num)+' please login to the system')
-            self.login_page()
+            messagebox.showerror('', 'Amount must be integer')
 
-    def logged_page(self):
-        self.user_login_page.grid_remove()
-        self.user_create_page.grid_remove()
+    def widthdraw(self):
+        if self.check__number(self.withdraw_entry_1.get()):
+            amount = int(self.withdraw_entry_1.get())
+            result_user = self.user.update_balance(
+                'withdraw', self.user.account_num, amount)
+            if result_user:
+                result_account = self.account.withdraw_money(amount)
 
-        self.user_logged_page.grid(row=0)
+            if result_account:
+                messagebox.showinfo(
+                    "Success", 'Operation is succesfully done.')
 
-        self.logged_deposit_button.grid(row=0)
-        self.logged_withdraw_button.grid(row=1)
-        self.logged_send_money_button.grid(row=2)
-        self.logged_edit_personal_detail.grid(row=3)
-        self.logged_delete_button.grid(row=4)
-        self.logged_logout_button.grid(row=5)
+            self.logged_page()
+        else:
+            messagebox.showerror('', 'Amount must be integer')
+
+    def send_submit(self):
+        if self.check__number(self.send_entry_2.get()):
+
+            to_acc_num = self.send_entry_1.get()
+            amount = self.send_entry_2.get()
+            return_result = self.user.send_money(to_acc_num, amount)
+            if return_result:
+                result_account = self.account.send_money(
+                    to_acc_num, amount, return_result)
+            if result_account:
+                messagebox.showinfo(
+                    "Success", 'Operation is succesfully done.')
+            else:
+                messagebox.showinfo("", 'insufficient balance')
+            self.logged_page()
+        else:
+            messagebox.showerror('', 'Amount must be integer')
 
     def return_home(self):
+        self.user.name = ''
+        self.user.pin = ''
+        self.user.account_num = ''
         self.user_logged_page.grid_remove()
         self.user_login_page.grid_remove()
         self.user_create_page.grid_remove()
         self.create_entry_page()
-        self.user.name = ''
-        self.user.pin = ''
-        self.user.account_num = ''
-
-    def create_entry_page(self):
-        self.entry_page.grid(row=0)
-        self.entry_create_button.grid(row=0, pady=10)
-        self.entry_login_button.grid(row=1)
-        self.entry_exit_button.grid(row=2)
-
-    def create_page(self):
-        self.entry_page.grid_remove()
-        self.user_create_page.grid(row=0)
-        self.create_label_1.grid(row=0, column=0)
-        self.create_entry_1.grid(row=0, column=1)
-
-        self.create_label_2.grid(row=1, column=0)
-        self.create_entry_2.grid(row=1, column=1)
-
-        self.create_label_3.grid(row=2, column=0)
-        self.create_entry_3.grid(row=2, column=1)
-
-        self.create_submit_button.grid(row=3, sticky=W)
-        self.create_home_button.grid(row=4, sticky=W)
 
     def edit_info(self):
         name = self.edit_entry_1.get()
         pin = self.edit_entry_2.get()
         self.user.update_info(name, pin)
-    ###Submit buttons ####
-
-    def deposit(self):
-        amount = self.deposit_entry_1.get()
-        result_user = self.user.update_balance(
-            'deposit', self.user.account_num, int(amount))
-        if result_user:
-            result_account = self.account.deposit_money(amount)
-
-        if result_account:
-            messagebox.showinfo("Success", 'Operation is succesfully done.')
-
-    def widthdraw(self):
-        amount = int(self.withdraw_entry_1.get())
-        self.user.update_balance('withdraw', self.user.account_num, amount)
-        self.account.withdraw_money(amount)
-
-    def send_money(self):
-        pass
-
-    def delete(self):
-        self.open_windows.append(self.user_delete_page)
-
-    def send_submit(self):
-        to_acc_num = self.send_entry_1.get()
-        amount = self.send_entry_2.get()
-        return_result = self.user.send_money(to_acc_num, amount)
-        if return_result:
-            self.account.send_money(to_acc_num, amount, return_result)
+        self.logged_page()
 
     def delete_account(self):
         self.user.remove_account()
         self.account.remove_account()
+        self.user.name = ''
+        self.user.account_num = ''
+        self.user.balance = ''
+        self.user.pin = ''
+        self.create_entry_page()
     #### Cancel Buttons #####
 
     def return_logged_menu(self, page):
@@ -228,16 +268,35 @@ class UI_Class(Frame):
 
     def exit_pages(self):
         self.master.destroy()
+
+    ###### UTILITIES ######
+    def check__number(self, entry):
+        try:
+            float(entry)
+            return 1
+        except ValueError:
+            return 0
+
     #### UI ELEMENTS #####
 
     def UI_elements(self):
         # Entry Pages
+        img = Image.open('image11.jpg')
+        img = img.resize((200, 200))
+        img = ImageTk.PhotoImage(img)
+
+        self.entry_logo_img = Label(self.entry_page, image=img)
+        self.entry_logo_label = Label(self.entry_page, text="Refugee Bank", font=(
+            'Calibri', 14, 'bold'), bg='orange', fg='white')
+        self.entry_logo_label_2 = Label(
+            self.entry_page, text='"The best bank application you have ever used."', font=('Calibri', 12, 'italic'))
+
         self.entry_create_button = Button(
-            self.entry_page, text="Create an Account", command=self.create_page)
+            self.entry_page, text='Register', font=('Calibri', 12, 'bold'), width=20, bg='blue',  command=self.create_page)
         self.entry_login_button = Button(
-            self.entry_page, text='Login to your account', command=self.login_page)
+            self.entry_page, text='Login', font=('Calibri', 12, 'bold'), width=20, bg='blue', fg='white', command=self.login_page)
         self.entry_exit_button = Button(
-            self.entry_page, text='Exit', command=self.exit_pages)
+            self.entry_page, text='Exit', font=('Calibri', 12, 'bold'), width=20, bg='blue', fg='white', command=self.exit_pages)
 
         ###### CREATE PAGE ######
         # Labels
@@ -339,7 +398,7 @@ class UI_Class(Frame):
 
         # Entry
         self.send_entry_1 = Entry(self.user_send_page)
-        self.send_entry_2 = Entry(self.user_send_page, show='*')
+        self.send_entry_2 = Entry(self.user_send_page)
 
         # Buttons
         self.send_submit_button = Button(
@@ -369,7 +428,7 @@ class UI_Class(Frame):
         ###### DELETE PAGE ######
         # Labels
         self.delete_entry_1 = Label(
-            self.user_delete_page, text='Woudl you like to delete your account? \nThink about it again!!!!')
+            self.user_delete_page, text='Would you like to delete your account? \nThink about it again!!!!')
 
         # Buttons
         self.delete_yes_button = Button(
