@@ -55,6 +55,8 @@ class UI_Class(Frame):
 
     def create_page(self):
         self.entry_page.grid_remove()
+        self.user_create_page.config(bg='orange')
+
         self.user_create_page.grid(row=0)
         self.create_label_1.grid(row=0, column=0)
         self.create_entry_1.grid(row=0, column=1)
@@ -70,6 +72,8 @@ class UI_Class(Frame):
 
     def login_page(self):
         self.entry_page.grid_remove()
+        self.user_login_page.config(bg='orange')
+
         self.user_login_page.grid(row=0)
 
         self.login_label_1.grid(row=0, column=0)
@@ -87,6 +91,7 @@ class UI_Class(Frame):
     def logged_page(self):
         self.user_login_page.grid_remove()
         self.user_create_page.grid_remove()
+        self.user_logged_page.config(bg='orange')
 
         self.user_logged_page.grid(row=0)
 
@@ -100,6 +105,8 @@ class UI_Class(Frame):
 
     def withdraw_page(self):
         self.user_logged_page.grid_remove()
+        self.user_withdraw_page.config(bg='orange')
+
         self.user_withdraw_page.grid(row=0)
         self.withdraw_label_1.grid(row=0, column=0)
         self.withdraw_entry_1.grid(row=0, column=1)
@@ -109,6 +116,8 @@ class UI_Class(Frame):
 
     def deposit_page(self):
         self.user_logged_page.grid_remove()
+        self.user_deposit_page.config(bg='orange')
+
         self.user_deposit_page.grid(row=0)
         self.deposit_label_1.grid(row=0, column=0)
         self.deposit_entry_1.grid(row=0, column=1)
@@ -118,6 +127,8 @@ class UI_Class(Frame):
 
     def edit_personal_page(self):
         self.user_logged_page.grid_forget()
+        self.user_edit_page.config(bg='orange')
+
         self.user_edit_page.grid(row=0)
         self.edit_label_1.grid(row=0, column=0)
         self.edit_entry_1.grid(row=0, column=1)
@@ -127,25 +138,29 @@ class UI_Class(Frame):
 
         self.edit_submit_button.grid(row=2)
         self.edit_home_button.grid(row=3)
-    
+
     def overview_page(self):
         self.user_logged_page.grid_remove()
+        self.user_overview_page.config(bg='orange')
+
         self.user_overview_page.grid(row=0)
-        name= 'Account Holder Name:   ' + self.user.name
-        acc_num = 'Account Number:   '+ self.user.account_num
-        balance = 'Your Balance:    '+ str(self.user.balance)
-        self.overview_label_1.config(text = name)
+        name = 'Account Holder Name:   ' + self.user.name
+        acc_num = 'Account Number:   ' + self.user.account_num
+        balance = 'Your Balance:    ' + str(self.user.balance)
+        self.overview_label_1.config(text=name)
         self.overview_label_1.grid(row=0, sticky=W)
 
-        self.overview_label_2.config(text = acc_num)
+        self.overview_label_2.config(text=acc_num)
         self.overview_label_2.grid(row=1, sticky=W)
 
-        self.overview_label_3.config(text = balance)
+        self.overview_label_3.config(text=balance)
         self.overview_label_3.grid(row=2, sticky=W)
         self.overview_home_button.grid(row=3, sticky=W)
 
     def delete_page(self):
         self.user_logged_page.grid_remove()
+        self.user_delete_page.config(bg='orange')
+
         self.user_delete_page.grid(row=0)
 
         self.delete_entry_1.grid(row=0)
@@ -154,6 +169,8 @@ class UI_Class(Frame):
 
     def send_page(self):
         self.user_logged_page.grid_remove()
+        self.user_send_page.config(bg='orange')
+
         self.user_send_page.grid(row=0)
 
         self.send_label_1.grid(row=0, column=0)
@@ -376,7 +393,7 @@ class UI_Class(Frame):
         self.logged_send_money_button = Button(self.user_logged_page,
                                                text="Send money", command=self.send_page)
         self.logged_overview_button = Button(self.user_logged_page,
-                                               text="Overview your account", command=self.overview_page)
+                                             text="Overview your account", command=self.overview_page)
         self.logged_logout_button = Button(self.user_logged_page,
                                            text="Logout", command=self.return_home)
 
@@ -448,19 +465,17 @@ class UI_Class(Frame):
         self.edit_home_button = Button(self.user_edit_page,
                                        text="Cancel", command=lambda: self.return_logged_menu(self.user_edit_page))
         ####### OVERVIEW PAGE ######
-        #Labels
+        # Labels
         self.overview_label_1 = Label(self.user_overview_page,
-                                  text='Account Holder Name: '+self.user.name)
+                                      text='Account Holder Name: '+self.user.name)
         self.overview_label_2 = Label(self.user_overview_page,
-                                  text='Account Number: '+self.user.account_num)
+                                      text='Account Number: '+self.user.account_num)
         self.overview_label_3 = Label(self.user_overview_page,
-                                  text='Your Balance: '+self.user.balance)
-        
-        #Button
+                                      text='Your Balance: '+self.user.balance)
+
+        # Button
         self.overview_home_button = Button(self.user_overview_page,
-                                          text="Return", command=lambda: self.return_logged_menu(self.user_overview_page))
-
-
+                                           text="Return", command=lambda: self.return_logged_menu(self.user_overview_page))
 
         ###### DELETE PAGE ######
         # Labels
