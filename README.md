@@ -22,4 +22,4 @@ If the user doesn't like or need or etc cases, he or she can delete the account.
 ![Alt text](assests/Class_Diagram.png?raw=true "Class Digram")
 
 We have three classes.
-"User" class is the parent class. "Bank account" class is the child class. In addition, the third class "Bank", we want to record the customers, accounts and relational informations. 
+"User" class is the parent class. "Bank account" class is the child class. In addition, the third class "UI_Class", Using this class we have created user interface. There are many upgrades it needs. We will aply them. 

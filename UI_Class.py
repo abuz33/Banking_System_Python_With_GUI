@@ -40,15 +40,16 @@ class UI_Class(Frame):
 
     # Pages
     def create_entry_page(self):
+
         self.entry_page.config(bg='orange')
         self.entry_page.grid(row=0)
         self.entry_logo_label.grid(row=0, sticky=N, pady=10)
         self.entry_logo_label_2.grid(row=1, sticky=N)
+        
 
         self.entry_logo_img.grid(row=2, sticky=N, pady=15)
 
         self.entry_create_button.grid(row=3, pady=10)
-        self.entry_create_button.config(bg='red')
         self.entry_login_button.grid(row=4,  pady=10)
         self.entry_exit_button.grid(row=5,  pady=10)
 
@@ -317,18 +318,20 @@ class UI_Class(Frame):
 
     def UI_elements(self):
         # Entry Pages
-        img = Image.open('image11.jpg')
-        img = img.resize((200, 200))
-        img = ImageTk.PhotoImage(img)
+        image1 = Image.open('image11.png')
+        image1.resize((400, 400))
+        test = ImageTk.PhotoImage(image1)
+        
+        self.entry_logo_img = Label(self.entry_page, image=test, width=200, height=200)
+        self.entry_logo_img.image=test
 
-        self.entry_logo_img = Label(self.entry_page, image=img)
         self.entry_logo_label = Label(self.entry_page, text="Refugee Bank", font=(
             'Calibri', 14, 'bold'), bg='orange', fg='white')
         self.entry_logo_label_2 = Label(
             self.entry_page, text='"The best bank application you have ever used."', font=('Calibri', 12, 'italic'))
 
         self.entry_create_button = Button(
-            self.entry_page, text='Register', font=('Calibri', 12, 'bold'), width=20, bg='blue',  command=self.create_page)
+            self.entry_page, text='Register', font=('Calibri', 12, 'bold'), width=20, bg='blue', fg='white',  command=self.create_page)
         self.entry_login_button = Button(
             self.entry_page, text='Login', font=('Calibri', 12, 'bold'), width=20, bg='blue', fg='white', command=self.login_page)
         self.entry_exit_button = Button(
