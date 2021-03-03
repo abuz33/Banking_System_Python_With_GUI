@@ -46,7 +46,7 @@ class User():
             return False
 
     def send_money(self, to_acc_num, amount):
-        if self.balance - amount > 0:
+        if int(self.balance) - int(amount) > 0:
             if self.check_user(to_acc_num):
                 balance = self.update_balance('deposit', to_acc_num, amount)
                 self.update_balance('withdraw', self.account_num, amount)
@@ -71,8 +71,10 @@ class User():
             lines = f.readlines()
 
             if operation_type == 'deposit':
+                self.balance += int(amount)
                 balance = int(lines[2][:-1]) + int(amount)
             elif operation_type == 'withdraw':
+                self.balance -= int(amount)
                 balance = int(lines[2][:-1]) - int(amount)
 
             lines[2] = str(balance) + '\n'

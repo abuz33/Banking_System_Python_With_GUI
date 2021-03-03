@@ -3,6 +3,7 @@ from tkinter import messagebox
 from random import randint
 import os
 from PIL import Image, ImageTk
+import re
 
 from Account import Account
 from User import User
@@ -31,6 +32,7 @@ class UI_Class(Frame):
         self.user_edit_page = Frame(self.master)
         self.user_delete_page = Frame(self.master)
         self.user_send_page = Frame(self.master)
+        self.user_overview_page = Frame(self.master)
 
         self.UI_elements()
         self.create_entry_page()
@@ -90,9 +92,10 @@ class UI_Class(Frame):
         self.logged_deposit_button.grid(row=0)
         self.logged_withdraw_button.grid(row=1)
         self.logged_send_money_button.grid(row=2)
-        self.logged_edit_personal_detail.grid(row=3)
-        self.logged_delete_button.grid(row=4)
-        self.logged_logout_button.grid(row=5)
+        self.logged_overview_button.grid(row=3)
+        self.logged_edit_personal_detail.grid(row=4)
+        self.logged_delete_button.grid(row=5)
+        self.logged_logout_button.grid(row=6)
 
     def withdraw_page(self):
         self.user_logged_page.grid_remove()
@@ -123,6 +126,22 @@ class UI_Class(Frame):
 
         self.edit_submit_button.grid(row=2)
         self.edit_home_button.grid(row=3)
+    
+    def overview_page(self):
+        self.user_logged_page.grid_remove()
+        self.user_overview_page.grid(row=0)
+        name= 'Account Holder Name:   ' + self.user.name
+        acc_num = 'Account Number:   '+ self.user.account_num
+        balance = 'Your Balance:    '+ str(self.user.balance)
+        self.overview_label_1.config(text = name)
+        self.overview_label_1.grid(row=0, sticky=W)
+
+        self.overview_label_2.config(text = acc_num)
+        self.overview_label_2.grid(row=1, sticky=W)
+
+        self.overview_label_3.config(text = balance)
+        self.overview_label_3.grid(row=2, sticky=W)
+        self.overview_home_button.grid(row=3, sticky=W)
 
     def delete_page(self):
         self.user_logged_page.grid_remove()
@@ -199,7 +218,7 @@ class UI_Class(Frame):
             if result_account:
                 messagebox.showinfo(
                     "Success", 'Operation is succesfully done.')
-            self.logged_page()
+            self.return_logged_menu(self.user_deposit_page)
         else:
             messagebox.showerror('', 'Amount must be integer')
 
@@ -215,7 +234,7 @@ class UI_Class(Frame):
                 messagebox.showinfo(
                     "Success", 'Operation is succesfully done.')
 
-            self.logged_page()
+            self.return_logged_menu(self.user_deposit_page)
         else:
             messagebox.showerror('', 'Amount must be integer')
 
@@ -233,7 +252,7 @@ class UI_Class(Frame):
                     "Success", 'Operation is succesfully done.')
             else:
                 messagebox.showinfo("", 'insufficient balance')
-            self.logged_page()
+            self.return_logged_menu(self.user_send_page)
         else:
             messagebox.showerror('', 'Amount must be integer')
 
@@ -353,14 +372,15 @@ class UI_Class(Frame):
 
         self.logged_send_money_button = Button(self.user_logged_page,
                                                text="Send money", command=self.send_page)
-
+        self.logged_overview_button = Button(self.user_logged_page,
+                                               text="Overview your account", command=self.overview_page)
         self.logged_logout_button = Button(self.user_logged_page,
                                            text="Logout", command=self.return_home)
 
         ###### DEPOSIT  PAGE ######
         # Lables
         self.deposit_label_1 = Label(self.user_deposit_page,
-                                     text='Enter your name: ')
+                                     text='Enter the amount: ')
 
         # Entry
         self.deposit_entry_1 = Entry(
@@ -424,6 +444,20 @@ class UI_Class(Frame):
 
         self.edit_home_button = Button(self.user_edit_page,
                                        text="Cancel", command=lambda: self.return_logged_menu(self.user_edit_page))
+        ####### OVERVIEW PAGE ######
+        #Labels
+        self.overview_label_1 = Label(self.user_overview_page,
+                                  text='Account Holder Name: '+self.user.name)
+        self.overview_label_2 = Label(self.user_overview_page,
+                                  text='Account Number: '+self.user.account_num)
+        self.overview_label_3 = Label(self.user_overview_page,
+                                  text='Your Balance: '+self.user.balance)
+        
+        #Button
+        self.overview_home_button = Button(self.user_overview_page,
+                                          text="Return", command=lambda: self.return_logged_menu(self.user_overview_page))
+
+
 
         ###### DELETE PAGE ######
         # Labels

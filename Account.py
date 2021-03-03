@@ -20,9 +20,11 @@ class Account:
         self.account_number = acc_num
         with open(str(acc_num)+'-rec.txt', "w") as frec:
             frec.write(
-                "Date               \t\t\t\t\tDeposit         withdraw                Balance\n")
+                "Date\t\t\t\t\t\t\t\tDeposit\t\t\twithdraw\t\t\t\tBalance\n")
             frec.write(str(strftime("[%Y-%m-%d] [%H-%M-%S]", gmtime())
                            )+"\t\t\t\t"+str(balance)+'\t\t\t\t\t\t\t\t\t\t'+str(balance))
+
+ 
 
     def deposit_money(self, amount):
         self.balance = int(self.balance) + amount
@@ -37,11 +39,12 @@ class Account:
         self.add_line_to_file(str(amount), 'withdraw',
                               str(self.account_number), self.balance)
 
-    def account_overview(self, amount):
-        pass
+    def account_overview(self):
+        with open(str(self.account_number)+'-rec.txt', 'r') as f:
+            return f.readlines()
 
     def send_money(self, to_acc_num, amount, balance):
-        if self.balance - amount > 0:
+        if int(self.balance) - int(amount) > 0:
             self.add_line_to_file(amount, 'deposit', to_acc_num, balance)
             self.add_line_to_file(amount, 'withdraw',
                                   self.account_number, self.balance)
