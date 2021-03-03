@@ -251,7 +251,7 @@ class UI_Class(Frame):
                 messagebox.showinfo(
                     "Success", 'Operation is succesfully done.')
 
-            self.return_logged_menu(self.user_deposit_page)
+            self.return_logged_menu(self.user_withdraw_page)
         else:
             messagebox.showerror('', 'Amount must be integer')
 
