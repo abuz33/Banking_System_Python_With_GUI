@@ -46,8 +46,6 @@ class UI_Class(Frame):
         self.entry_logo_label.grid(row=0, sticky=N, pady=10)
         self.entry_logo_label_2.grid(row=1, sticky=N)
 
-        self.entry_logo_img.grid(row=2, sticky=N, pady=15)
-
         self.entry_create_button.grid(row=3, pady=10)
         self.entry_login_button.grid(row=4,  pady=10)
         self.entry_exit_button.grid(row=5,  pady=10)
@@ -193,12 +191,13 @@ class UI_Class(Frame):
                 messagebox.showwarning(
                     "Try Again", "You have to enter all of the information!!!")
             else:
-                self.user.create_user(user_name, user_balance, user_pin)
-                self.account.init_account(
-                    user_name, user_balance, self.user.account_num)
-                messagebox.showinfo('Operation is successful!',
-                                    'Successfully created an account, \n Your account number is ' + str(self.user.account_num)+' please login to the system')
-                self.login_page()
+                result = self.user.create_user(
+                    user_name, user_balance, user_pin)
+                if result:
+                    messagebox.showinfo('Operation is successful!',
+                                        'Successfully created an account, \n Your account number is ' + str(self.user.account_num)+' please login to the system')
+
+                    self.login_page()
         else:
             messagebox.showinfo("", 'Balance must be a number')
 
@@ -206,23 +205,28 @@ class UI_Class(Frame):
         user_name = self.login_entry_1.get()
         user_account = self.login_entry_2.get()
         user_pin = self.login_entry_3.get()
-        return_result = self.user.login(user_name, user_account, user_pin)
 
-        if return_result == True:
-            self.user.account_num = user_account
-            self.user.pin = user_pin
-            self.user.name = user_name
-
-            self.account.login(
-                self.user.name, self.user.balance, self.user.account_num)
-
-            self.logged_page()
-        elif return_result == False:
+        if user_name == '' or user_account == '' or user_pin == '':
             messagebox.showwarning(
-                "Operation is not successful", 'Cannot find user')
-        elif return_result == "Informations entered doesn't match":
-            messagebox.showwarning(
-                'Not valid data', 'Your informations are not correct')
+                'Invalid way of Entering', 'You need to enter all of the information')
+        else:
+            return_result = self.user.login(user_name, user_account, user_pin)
+
+            if return_result == True:
+                self.user.account_num = user_account
+                self.user.pin = user_pin
+                self.user.name = user_name
+
+                self.account.login(
+                    self.user.name, self.user.balance, self.user.account_num)
+
+                self.logged_page()
+            elif return_result == False:
+                messagebox.showwarning(
+                    "Operation is not successful", 'Cannot find user')
+            elif return_result == "Informations entered doesn't match":
+                messagebox.showwarning(
+                    'Not valid data', 'Your informations are not correct')
 
     def deposit(self):
         if self.check__number(self.deposit_entry_1.get()):
@@ -317,14 +321,6 @@ class UI_Class(Frame):
 
     def UI_elements(self):
         # Entry Pages
-        image1 = Image.open('image11.png')
-        image1.resize((400, 400))
-        test = ImageTk.PhotoImage(image1)
-
-        self.entry_logo_img = Label(
-            self.entry_page, image=test, width=200, height=200)
-        self.entry_logo_img.image = test
-
         self.entry_logo_label = Label(self.entry_page, text="Refugee Bank", font=(
             'Calibri', 14, 'bold'), bg='orange', fg='white')
         self.entry_logo_label_2 = Label(
@@ -469,7 +465,7 @@ class UI_Class(Frame):
         self.overview_label_1 = Label(self.user_overview_page,
                                       text='Account Holder Name: '+self.user.name)
         self.overview_label_2 = Label(self.user_overview_page,
-                                      text='Account Number: '+self.user.account_num)
+                                      text='Account Number: '+str(self.user.account_num))
         self.overview_label_3 = Label(self.user_overview_page,
                                       text='Your Balance: '+self.user.balance)
 

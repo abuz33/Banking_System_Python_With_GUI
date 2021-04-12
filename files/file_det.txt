@@ -1,2 +1,0 @@
-1	Abuzer	10000
-2	Abuzer	5555
